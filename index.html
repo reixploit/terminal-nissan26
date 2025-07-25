@@ -114,8 +114,7 @@
     const API_KEY = "05a5abab95db44ce98a4fbe9ade73a89";
 
     const fetchNews = (query, elementId) => {
-      fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&sortBy=publishedAt&pageSize=5&language=id&apiKey=${API_KEY}`)
-        .then(res => res.json())
+      fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&sortBy=publishedAt&pageSize=5&language=en&apiKey=${API_KEY}`)     .then(res => res.json())
         .then(data => {
           if (data.status === "ok" && data.articles.length > 0) {
             const newsList = data.articles.map(article => `
@@ -136,9 +135,9 @@
     };
 
     // Jalankan untuk masing-masing
-    fetchNews("XAUUSD", "forex-news");
-    fetchNews("BTCUSD", "crypto-news");
-    fetchNews("AAPL OR saham", "stock-news");
+    fetchNews("gold", "forex-news");
+fetchNews("bitcoin", "crypto-news");
+fetchNews("apple stock", "stock-news");
   </script>
 </body>
 </html>
