@@ -111,32 +111,34 @@
   </section>
 
   <script>
-  const API_KEY = "05a5abab95db44ce98a4fbe9ade73a89";
+    const API_KEY = "9e303c29a8c6907f006e13f69f940958";
 
-  const fetchNews = (query, elementId) => {
-    fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&sortBy=publishedAt&pageSize=5&language=en&apiKey=${API_KEY}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "ok" && data.articles.length > 0) {
-          const newsList = data.articles.map(article => `
-            <div class="news-item">
-              <strong>${article.title}</strong><br/>
-              <small>${new Date(article.publishedAt).toLocaleString()}</small><br/>
-              <p>${article.description || ""}</p>
-              <a href="${article.url}" target="_blank">Baca selengkapnya</a>
-            </div>
-          `).join("");
-          document.getElementById(elementId).innerHTML = newsList;
-        } else {
-          document.getElementById(elementId).innerHTML = "<p>Tidak ada berita ditemukan.</p>";
-        }
-      }).catch(() => {
-        document.getElementById(elementId).innerHTML = "<p>Gagal memuat berita.</p>";
-      });
-  };
+    const fetchNews = (query, elementId) => {
+      fetch(`https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=id&max=5&token=${API_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.articles && data.articles.length > 0) {
+            const newsList = data.articles.map(article => `
+              <div class="news-item">
+                <strong>${article.title}</strong><br/>
+                <small>${new Date(article.publishedAt).toLocaleString()}</small><br/>
+                <p>${article.description || ""}</p>
+                <a href="${article.url}" target="_blank">Baca selengkapnya</a>
+              </div>
+            `).join("");
+            document.getElementById(elementId).innerHTML = newsList;
+          } else {
+            document.getElementById(elementId).innerHTML = "<p>Tidak ada berita ditemukan.</p>";
+          }
+        }).catch(() => {
+          document.getElementById(elementId).innerHTML = "<p>Gagal memuat berita.</p>";
+        });
+    };
 
-  // 🔁 Gunakan kata yang pasti ada di NewsAPI
-  fetchNews("gold", "forex-news");
-  fetchNews("bitcoin", "crypto-news");
-  fetchNews("apple stock", "stock-news");
-    </script>
+    // Panggil berita sesuai kategori
+    fetchNews("XAUUSD", "forex-news");
+    fetchNews("BTCUSD", "crypto-news");
+    fetchNews("AAPL saham", "stock-news");
+  </script>
+</body>
+</html>
