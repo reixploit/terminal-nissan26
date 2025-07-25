@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terminal NisSan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0b0c1a;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 1rem;
+      background-color: #101123;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    section {
+      padding: 1rem 2rem;
+    }
+    h2 {
+      margin-top: 2rem;
+      color: #42a5f5;
+    }
+    .news-item {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background-color: #1c1d2e;
+      border-radius: 8px;
+    }
+    .news-item a {
+      color: #42a5f5;
+      text-decoration: none;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+      height: 300px;
+      margin-top: 1rem;
+    }
+    .tradingview-widget-container {
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>Terminal NisSan</header>
+
+  <section id="forex">
+    <h2>Forex</h2>
+    <div class="tradingview-widget-container">
+      <div id="tradingview_forex"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+      {
+        "symbol": "OANDA:XAUUSD",
+        "width": "100%",
+        "height": "300",
+        "locale": "id",
+        "dateRange": "1D",
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "autosize": true
+      }
+      </script>
+    </div>
+    <div id="forex-news"></div>
+  </section>
+
+  <section id="crypto">
+    <h2>Crypto</h2>
+    <div class="tradingview-widget-container">
+      <div id="tradingview_crypto"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+      {
+        "symbol": "BINANCE:BTCUSDT",
+        "width": "100%",
+        "height": "300",
+        "locale": "id",
+        "dateRange": "1D",
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "autosize": true
+      }
+      </script>
+    </div>
+    <div id="crypto-news"></div>
+  </section>
+
+  <section id="stocks">
+    <h2>Saham</h2>
+    <div class="tradingview-widget-container">
+      <div id="tradingview_stock"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+      {
+        "symbol": "NASDAQ:AAPL",
+        "width": "100%",
+        "height": "300",
+        "locale": "id",
+        "dateRange": "1D",
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "autosize": true
+      }
+      </script>
+    </div>
+    <div id="stock-news"></div>
+  </section>
+
+  <script>
+    const API_KEY = "7a2e6c87669c4a8b8f292af9c2a72f59";
+
+    const fetchNews = (query, elementId) => {
+      fetch(`https://newsapi.org/v2/everything?q=${query}&sortBy=publishedAt&pageSize=5&language=id&apiKey=${API_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "ok") {
+            const newsList = data.articles.map(article => `
+              <div class="news-item">
+                <strong>${article.title}</strong><br/>
+                <small>${new Date(article.publishedAt).toLocaleString()}</small><br/>
+                <p>${article.description}</p>
+                <a href="${article.url}" target="_blank">Baca selengkapnya</a>
+              </div>
+            `).join("");
+            document.getElementById(elementId).innerHTML = newsList;
+          } else {
+            document.getElementById(elementId).innerHTML = "<p>Gagal mengambil berita.</p>";
+          }
+        }).catch(() => {
+          document.getElementById(elementId).innerHTML = "<p>Gagal memuat berita.</p>";
+        });
+    };
+
+    fetchNews("forex", "forex-news");
+    fetchNews("bitcoin OR crypto", "crypto-news");
+    fetchNews("saham OR stock", "stock-news");
+  </script>
+</body>
+</html>
