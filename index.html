@@ -51,7 +51,7 @@
   <header>Terminal NisSan</header>
 
   <section id="forex">
-    <h2>Forex</h2>
+    <h2>Forex (XAUUSD)</h2>
     <div class="tradingview-widget-container">
       <div id="tradingview_forex"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
@@ -67,11 +67,11 @@
       }
       </script>
     </div>
-    <div id="forex-news"></div>
+    <div id="forex-news">Memuat berita...</div>
   </section>
 
   <section id="crypto">
-    <h2>Crypto</h2>
+    <h2>Crypto (BTCUSD)</h2>
     <div class="tradingview-widget-container">
       <div id="tradingview_crypto"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
@@ -87,11 +87,11 @@
       }
       </script>
     </div>
-    <div id="crypto-news"></div>
+    <div id="crypto-news">Memuat berita...</div>
   </section>
 
   <section id="stocks">
-    <h2>Saham</h2>
+    <h2>Saham (AAPL)</h2>
     <div class="tradingview-widget-container">
       <div id="tradingview_stock"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
@@ -107,37 +107,38 @@
       }
       </script>
     </div>
-    <div id="stock-news"></div>
+    <div id="stock-news">Memuat berita...</div>
   </section>
 
   <script>
-    const API_KEY = "7a2e6c87669c4a8b8f292af9c2a72f59";
+    const API_KEY = "05a5abab95db44ce98a4fbe9ade73a89";
 
     const fetchNews = (query, elementId) => {
-      fetch(`https://newsapi.org/v2/everything?q=${query}&sortBy=publishedAt&pageSize=5&language=id&apiKey=${API_KEY}`)
+      fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&sortBy=publishedAt&pageSize=5&language=id&apiKey=${API_KEY}`)
         .then(res => res.json())
         .then(data => {
-          if (data.status === "ok") {
+          if (data.status === "ok" && data.articles.length > 0) {
             const newsList = data.articles.map(article => `
               <div class="news-item">
                 <strong>${article.title}</strong><br/>
                 <small>${new Date(article.publishedAt).toLocaleString()}</small><br/>
-                <p>${article.description}</p>
+                <p>${article.description || ""}</p>
                 <a href="${article.url}" target="_blank">Baca selengkapnya</a>
               </div>
             `).join("");
             document.getElementById(elementId).innerHTML = newsList;
           } else {
-            document.getElementById(elementId).innerHTML = "<p>Gagal mengambil berita.</p>";
+            document.getElementById(elementId).innerHTML = "<p>Tidak ada berita ditemukan.</p>";
           }
         }).catch(() => {
           document.getElementById(elementId).innerHTML = "<p>Gagal memuat berita.</p>";
         });
     };
 
-    fetchNews("forex", "forex-news");
-    fetchNews("bitcoin OR crypto", "crypto-news");
-    fetchNews("saham OR stock", "stock-news");
+    // Jalankan untuk masing-masing
+    fetchNews("XAUUSD", "forex-news");
+    fetchNews("BTCUSD", "crypto-news");
+    fetchNews("AAPL OR saham", "stock-news");
   </script>
 </body>
 </html>
